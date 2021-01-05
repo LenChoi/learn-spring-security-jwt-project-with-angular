@@ -1,0 +1,18 @@
+jwt:
+  secret: aj3ljsdfo2nldnf94ndajsf9p2jdlafl2
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/supportportal?serverTimezone=UTC
+    username: root
+    password: alsgh3144
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
