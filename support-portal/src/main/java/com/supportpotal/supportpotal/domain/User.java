@@ -20,7 +20,7 @@ public class User implements Serializable {
     private Long id;
     private String userId;
     private String firstName;
-    private String lastname;
+    private String lastName;
     private String username;
     private String password;
     private String email;
@@ -28,7 +28,7 @@ public class User implements Serializable {
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
     private Date joinDate;
-    private String[] roles; //ROLE_USER{ read, edit }, ROLE_ADMIN
+    private String role; //ROLE_USER{ read, edit }, ROLE_ADMIN
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
