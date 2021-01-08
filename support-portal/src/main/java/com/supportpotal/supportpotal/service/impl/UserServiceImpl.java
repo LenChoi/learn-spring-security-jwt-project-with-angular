@@ -7,6 +7,7 @@ import com.supportpotal.supportpotal.exception.domain.EmailExistException;
 import com.supportpotal.supportpotal.exception.domain.UserNotFoundException;
 import com.supportpotal.supportpotal.exception.domain.UsernameExistException;
 import com.supportpotal.supportpotal.repository.UserRepository;
+import com.supportpotal.supportpotal.service.LoginAttemptService;
 import com.supportpotal.supportpotal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final LoginAttemptService loginAttemptService;
 
     @Override //로그인할때 유저 정보를 찾는다 없으면 에러
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,12 +48,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             LOGGER.error(NO_USER_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
         } else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.save(user); //없어도 업데에트 될거 같은데?
             UserPrincipal userPrincipal = new UserPrincipal(user);
             LOGGER.info(FOUND_USER_BY_USERNAME + username);
             return userPrincipal;
+        }
+    }
+
+    private void validateLoginAttempt(User user) {
+        if(user.isNotLocked()) {
+            if(loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+                user.setNotLocked(false);
+            } else {
+                user.setNotLocked(true);
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
         }
     }
 
