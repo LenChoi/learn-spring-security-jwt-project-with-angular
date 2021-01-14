@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             LOGGER.info(FOUND_USER_BY_USERNAME + username);
             return userPrincipal;
         }
-    } //check3
+    } //check4
 
     private void validateLoginAttempt(User user) {
         if(user.isNotLocked()) {
